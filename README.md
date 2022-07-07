@@ -8,6 +8,12 @@ It has been developed under python 3.9.0. I don't know if it works well under ot
 
 `pip install -r requirements.txt`
 
+## Building
+
+You can build `cli.exe` to use it as a standalone executable. You can then rename it, and add it to the path to use it in every terminal.
+
+`py build.py build`
+
 ## GUI
 
 The easiest way to use this util is to use the GUI, an interface to the CLI. Launch it with the following command: `py gui.py` at the root of the project

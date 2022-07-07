@@ -5,6 +5,7 @@ import cli.constants as constants
 import os
 import subprocess
 import platform
+import termcolor
 
 
 def check_ffmpeg():
@@ -30,9 +31,10 @@ class yt_logger:
         pass
 
 
-def execute(urls, audio_only: bool = False):
+def execute(_urls, audio_only: bool = False):
+    urls = list(set(_urls))
     print("Downloading {} url{}{}".format(
-        len(urls),
+        termcolor.colored(len(urls), "green"),
         "s" if len(urls) > 1 else "",
         " (audio only)" if audio_only else ""
     ))
@@ -62,7 +64,7 @@ def execute(urls, audio_only: bool = False):
                             "logger": yt_logger,
                             "progress_hooks": [hook],
                             "outtmpl": file_destination,
-                            'format': 'bestaudio/best' if audio_only else "bestvideo/best",
+                            'format': 'bestaudio/best' if audio_only else None,
                         }
                         if audio_only:
                             opts["postprocessors"] = [{
@@ -73,10 +75,11 @@ def execute(urls, audio_only: bool = False):
                         ydl = YoutubeDL(opts)
                         with ydl:
                             context.text = "Extracting video infos from url {}...".format(
-                                url)
+                                termcolor.colored(url, "green")
+                            )
                             infos = ydl.extract_info(url, download=False)
-                            context.text = "Downloading from video '{}'...".format(
-                                infos["title"])
+                            context.text = "Downloading video '{}'...".format(
+                                termcolor.colored(infos["title"], "green"))
                             ydl.download([url])
                             context.text = "Resolving filepath..."
                             if audio_only:
@@ -91,7 +94,6 @@ def execute(urls, audio_only: bool = False):
                                 if c.isalpha() or c.isdigit() or c == ' ']).rstrip() + "." + ext
                             i = 1
                             while os.path.isfile(new_path):
-                                context.text = "Duplicate filename, changing it..."
                                 new_path = constants.Directory.YOUTUBE_VIDEOS + os.sep + "({}) ".format(i) + \
                                     "".join([
                                         c for c in infos["title"]
@@ -99,8 +101,9 @@ def execute(urls, audio_only: bool = False):
                                 i += 1
                             context.text = "Moving file..."
                             shutil.move(file_destination, new_path)
-                            context.text = "Done"
-                    print("\nDownloaded {}".format(infos["title"]))
+                            context.text = termcolor.colored("Done", "green")
+                    print("\nDownloaded {}".format(
+                        termcolor.colored(infos["title"], "green")))
                 except utils.UnsupportedError:
                     print("Invalid link provided (url: {})".format(url))
                 except utils.DownloadError as e:

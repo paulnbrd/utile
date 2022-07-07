@@ -2,17 +2,24 @@ import os
 import sys
 from yaspin import yaspin
 from yaspin.spinners import Spinners
+import termcolor
 
 filepath = os.path.realpath(os.path.dirname(__file__))
-cwd = os.cwd()
+cwd = os.getcwd()
 documents_path = os.path.realpath(os.path.expanduser("~/Documents"))
 
 
 class Directory:
-    YOUTUBE_VIDEOS = os.path.join(filepath, "youtube")
+    UTILS_DOCUMENTS_PATH = os.path.join(documents_path, "CLI_UTILS")
+    YOUTUBE_VIDEOS = os.path.join(documents_path, "CLI_UTILS", "youtube")
 
 
-os.makedirs(Directory.YOUTUBE_VIDEOS, exist_ok=True)
+try:
+    os.makedirs(Directory.YOUTUBE_VIDEOS, exist_ok=True)
+except PermissionError:
+    print(termcolor.colored(
+        "Could not create data directory. Please check program permissions.", "red"))
+    sys.exit(-1)
 
 
 class StandardContext:

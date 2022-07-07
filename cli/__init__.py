@@ -1,6 +1,7 @@
 import fire
 import inspect
 from cli.modules import youtube_dl, convert
+import termcolor
 
 
 def static_class(*args, **kwargs) -> callable:
@@ -40,4 +41,4 @@ class CommandLine:
 try:
     fire.Fire(CommandLine)
 except KeyboardInterrupt:
-    print("User aborted")
+    print(termcolor.colored("[User aborted]", "red"))
