@@ -1,21 +1,20 @@
-from yaspin import yaspin
-from yaspin.spinners import Spinners
 import tempfile
 from yt_dlp import YoutubeDL, utils
 import shutil
-import constants
+import cli.constants as constants
 import os
-import time
-from modules import youtube_dl
 import subprocess
+import platform
 
 
 def check_ffmpeg():
     ffmpeg_available = True
     try:
-        subprocess.check_output(['where', 'ffmpeg'])
-    except Exception as e:
-        print(e)
+        if "windows" in platform.platform().lower():
+            subprocess.check_output(['where', 'ffmpeg'])
+        else:
+            subprocess.check_output(['whereis', 'ffmpeg'])
+    except:
         ffmpeg_available = False
     return ffmpeg_available
 

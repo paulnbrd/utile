@@ -4,6 +4,8 @@ from yaspin import yaspin
 from yaspin.spinners import Spinners
 
 filepath = os.path.realpath(os.path.dirname(__file__))
+cwd = os.cwd()
+documents_path = os.path.realpath(os.path.expanduser("~/Documents"))
 
 
 class Directory:
