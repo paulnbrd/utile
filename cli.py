@@ -1,10 +1,6 @@
 import fire
 import inspect
-from yaspin import yaspin
-import time
-import constants
-import os
-from modules import youtube_dl
+from modules import youtube_dl, convert
 
 
 def static_class(*args, **kwargs) -> callable:
@@ -17,6 +13,7 @@ def static_class(*args, **kwargs) -> callable:
         return args[0]()
     # The first argument is not a class,
     # Used as decorator with parameters
+
     def wrapper(cl) -> object:
         # Instantiate the class with the provided arguments
         return cl(*args, **kwargs)
@@ -35,7 +32,10 @@ class CommandLine:
         API.youtube_download(urls, onlyaudio)
         # end_time = time.time()
         # return "Finished in {}s".format(round(end_time - start_time, 2))
-    
+
+    def convert(self, image_path: str, format: str = "png", width: int = None, height: int = None):
+        convert.execute(image_path, format, width, height)
+
 
 if __name__ == "__main__":
     try:

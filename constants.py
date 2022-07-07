@@ -13,5 +13,25 @@ class Directory:
 os.makedirs(Directory.YOUTUBE_VIDEOS, exist_ok=True)
 
 
+class StandardContext:
+
+    @property
+    def text(self):
+        return ""
+
+    @text.setter
+    def text(self, text: str):
+        print(text, end="")
+
+    def __enter__(self, *args, **kwargs):
+        pass
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        pass
+
+
 def create_spinner():
+    if not sys.stdin.isatty():
+        return StandardContext()
     return yaspin(Spinners.timeTravel)

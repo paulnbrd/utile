@@ -10,8 +10,6 @@ from modules import youtube_dl
 import subprocess
 
 
-
-
 def check_ffmpeg():
     ffmpeg_available = True
     try:
@@ -25,12 +23,14 @@ def check_ffmpeg():
 class yt_logger:
     def error(msg):
         pass
+
     def warning(msg):
         pass
+
     def debug(msg):
         pass
-    
-    
+
+
 def execute(urls, audio_only: bool = False):
     print("Downloading {} url{}{}".format(
         len(urls),
@@ -50,7 +50,8 @@ def execute(urls, audio_only: bool = False):
                     with constants.create_spinner() as context:
                         def hook(data: dict):
                             if data.get("status") == "downloading":
-                                context.text = "{} left, {} done".format(data["_eta_str"], data["_percent_str"])
+                                context.text = "{} left, {} done".format(
+                                    data["_eta_str"], data["_percent_str"])
                             elif data.get("status") == "finished":
                                 context.text = "Finished{}".format(
                                     '. Converting to audio...' if audio_only else ''
@@ -72,29 +73,35 @@ def execute(urls, audio_only: bool = False):
                             }]
                         ydl = YoutubeDL(opts)
                         with ydl:
-                            context.text = "Extracting video infos from url {}...".format(url)
+                            context.text = "Extracting video infos from url {}...".format(
+                                url)
                             infos = ydl.extract_info(url, download=False)
-                            context.text = "Downloading video '{}'...".format(infos["title"])
+                            context.text = "Downloading from video '{}'...".format(
+                                infos["title"])
                             ydl.download([url])
-                            context.text = "Moving file..."
+                            context.text = "Resolving filepath..."
                             if audio_only:
-                                file_destination = os.path.join(os.path.dirname(file_destination), ".mp3")
+                                file_destination = os.path.join(
+                                    os.path.dirname(file_destination), ".mp3")
                                 ext = "mp3"
                             else:
                                 ext = infos["ext"]
-                            
+
                             new_path = constants.Directory.YOUTUBE_VIDEOS + os.sep + "".join([
                                 c for c in infos["title"]
-                                if c.isalpha() or c.isdigit() or c==' ']).rstrip()  + "." + ext
+                                if c.isalpha() or c.isdigit() or c == ' ']).rstrip() + "." + ext
                             i = 1
                             while os.path.isfile(new_path):
+                                context.text = "Duplicate filename, changing it..."
                                 new_path = constants.Directory.YOUTUBE_VIDEOS + os.sep + "({}) ".format(i) + \
                                     "".join([
-                                    c for c in infos["title"]
-                                    if c.isalpha() or c.isdigit() or c==' ']).rstrip()  + "." + ext
+                                        c for c in infos["title"]
+                                        if c.isalpha() or c.isdigit() or c == ' ']).rstrip() + "." + ext
+                                i += 1
+                            context.text = "Moving file..."
                             shutil.move(file_destination, new_path)
                             context.text = "Done"
-                    print("Downloaded {}".format(infos["title"]))
+                    print("\nDownloaded {}".format(infos["title"]))
                 except utils.UnsupportedError:
                     print("Invalid link provided (url: {})".format(url))
                 except utils.DownloadError as e:

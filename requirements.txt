@@ -1,0 +1,4 @@
+PIL
+yt_dlp
+yaspin
+PyQt6
