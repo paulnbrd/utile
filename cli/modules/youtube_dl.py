@@ -1,7 +1,7 @@
 import tempfile
 from yt_dlp import YoutubeDL, utils
 import shutil
-import cli.constants as constants
+import cli.utils as utils
 import os
 import subprocess
 import platform
@@ -67,7 +67,7 @@ def execute(*urls, onlyaudio: bool = False):
                 temp.close()  # Because youtube_dl needs to access it
                 file_destination = temp.name
                 try:
-                    with constants.create_spinner() as context:
+                    with utils.create_spinner() as context:
                         def hook(data: dict):
                             if data.get("status") == "downloading":
                                 context.text = "{} left, {} done".format(
@@ -108,12 +108,12 @@ def execute(*urls, onlyaudio: bool = False):
                             else:
                                 ext = infos["ext"]
 
-                            new_path = constants.Directory.YOUTUBE_VIDEOS + os.sep + "".join([
+                            new_path = utils.Directory.YOUTUBE_VIDEOS + os.sep + "".join([
                                 c for c in infos["title"]
                                 if c.isalpha() or c.isdigit() or c == ' ']).rstrip() + "." + ext
                             i = 1
                             while os.path.isfile(new_path):
-                                new_path = constants.Directory.YOUTUBE_VIDEOS + os.sep + "({}) ".format(i) + \
+                                new_path = utils.Directory.YOUTUBE_VIDEOS + os.sep + "({}) ".format(i) + \
                                     "".join([
                                         c for c in infos["title"]
                                         if c.isalpha() or c.isdigit() or c == ' ']).rstrip() + "." + ext
