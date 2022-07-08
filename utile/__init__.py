@@ -53,11 +53,16 @@ class CommandLine:
             os.path.join(modules_path, file)
         ) and not file == "__init__.py" and not file == "__init__.pyc"]
         
+        names = []
         for file in files:
             module = importlib.import_module("utile.modules.{}".format(file))
             if not hasattr(module, "MODULE"):
                 print(RuntimeWarning("MODULE_ERROR > MODULE object could not be found for module {}".format(file)))
             else:
+                module_name = getattr(module, "MODULE").get_command_name()
+                if module_name in names:
+                    raise RuntimeError("Duplicate command name {}".format(module_name))
+                names.append(module_name)
                 self.modules.append(getattr(module, "MODULE"))
             
         self.instantiate_modules()
