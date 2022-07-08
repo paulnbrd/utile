@@ -12,6 +12,11 @@ documents_path = os.path.realpath(os.path.expanduser("~/Documents"))
 class Directory:
     UTILS_DOCUMENTS_PATH = os.path.join(documents_path, "CLI_UTILS")
     YOUTUBE_VIDEOS = os.path.join(documents_path, "CLI_UTILS", "youtube")
+    
+    def create_storage_directory(self, directory_name: str):
+        directory_path = os.path.join(Directory.UTILS_DOCUMENTS_PATH, directory_name)
+        Directory.__setattr__(directory_name.upper(), directory_path)
+        return directory_name.upper()
 
 
 try:

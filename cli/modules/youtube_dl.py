@@ -6,6 +6,11 @@ import os
 import subprocess
 import platform
 import termcolor
+import validators
+import colorama
+from cli.modules.Module import Module
+
+colorama.init()
 
 
 def check_ffmpeg():
@@ -31,8 +36,22 @@ class yt_logger:
         pass
 
 
-def execute(_urls, audio_only: bool = False):
-    urls = list(set(_urls))
+def execute(*urls, onlyaudio: bool = False):
+    audio_only = onlyaudio
+    urls = list(set(urls))
+    if len(urls) == 0:
+        print("No url was provided.")
+        return
+    
+    for url in urls:
+        if not validators.url(url):
+            print("Invalid url {}. Removing it".format(termcolor.colored(url, "green")))
+            urls.remove(url)
+            
+    if len(urls) == 0:
+        print("No valid url left.")
+        return
+    
     print("Downloading {} url{}{}".format(
         termcolor.colored(len(urls), "green"),
         "s" if len(urls) > 1 else "",
@@ -110,3 +129,13 @@ def execute(_urls, audio_only: bool = False):
                     print("Could not download video (url: {})".format(url))
         except PermissionError:
             print("The script is missing permissions to write temporary files")
+
+
+class YoutubeDownloader(Module):
+    def get_command_name(self) -> str:
+        return "youtube"
+    def get_executor(self):
+        return execute
+
+
+MODULE = YoutubeDownloader()

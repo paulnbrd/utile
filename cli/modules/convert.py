@@ -1,7 +1,9 @@
 from PIL import Image
 
+from cli.modules.Module import Module
 
-def execute(image_path: str, to_format: str = "png", width: int = None, height: int = None):
+
+def execute(image_path: str, format: str = "png", width: int = None, height: int = None):
     try:
         print("Opening image...")
         result_kwargs = {}
@@ -17,17 +19,27 @@ def execute(image_path: str, to_format: str = "png", width: int = None, height: 
         elif height:
             img = img.resize((img.size[0], height))
 
-        new_image_path = ".".join(image_path.split(".")[:-1]) + "." + to_format
+        new_image_path = ".".join(image_path.split(".")[:-1]) + "." + format
 
-        if to_format == "jpeg":
+        if format == "jpeg":
             img = img.convert("RGB")
-        elif to_format == "ico":
+        elif format == "ico":
             result_kwargs["sizes"] = []
             for size in [128, 256]:
                 result_kwargs["sizes"].append((size, size))
 
-        img.save(new_image_path, format=to_format, **result_kwargs)
+        img.save(new_image_path, format=format, **result_kwargs)
         print("Image converted")
     except Exception as e:
         print("An error occurred while converting image")
         print("Error", e)
+
+
+class ImageConverter(Module):
+    def get_command_name(self) -> str:
+        return "convert"
+    def get_executor(self):
+        return execute
+    
+
+MODULE = ImageConverter()

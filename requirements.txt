@@ -1,4 +1,6 @@
-PIL
-yt_dlp
-yaspin
-PyQt6
+Pillow==9.1.1
+yt-dlp==2022.6.29
+yaspin==2.1.0
+PyQt6==6.3.1
+validators==0.20.0
+colorama==0.4.5

@@ -2,6 +2,10 @@ import fire
 import inspect
 from cli.modules import youtube_dl, convert
 import termcolor
+import os
+import importlib
+
+from cli.modules.Module import Module
 
 
 def static_class(*args, **kwargs) -> callable:
@@ -27,18 +31,43 @@ class API:
         youtube_dl.execute(urls, audio_only=audio_only)
 
 
-class CommandLine:
-    def youtube(self, *urls: str, onlyaudio: bool = False):
-        # start_time = time.time()
-        API.youtube_download(urls, onlyaudio)
-        # end_time = time.time()
-        # return "Finished in {}s".format(round(end_time - start_time, 2))
+class CommandLineInterface:
+    pass
 
-    def convert(self, image_path: str, format: str = "png", width: int = None, height: int = None):
-        convert.execute(image_path, format, width, height)
+
+class CommandLine:
+    def __init__(self) -> None:
+        self.modules: list[Module] = []
+        self.interface = None
+        
+        self.load_modules()
+        
+    def load_modules(self):
+        self_path = os.path.realpath(os.path.dirname(__file__))
+        modules_path = os.path.join(self_path, "modules")
+        files = os.listdir(modules_path)
+        if "Module.py" in files:
+            files.remove("Module.py")
+        files = [file.removesuffix(".py") for file in files if not os.path.isdir(
+            os.path.join(modules_path, file)
+        )]
+        
+        for file in files:
+            module = importlib.import_module("cli.modules.{}".format(file))
+            if not hasattr(module, "MODULE"):
+                raise RuntimeError("MODULE object could not be found for module {}".format(file))
+            self.modules.append(getattr(module, "MODULE"))
+            
+        self.instantiate_modules()
+                    
+    def instantiate_modules(self):
+        self.interface = CommandLineInterface()
+        for module in self.modules:
+            setattr(self.interface, module.get_command_name(), module.get_executor())
+            
 
 
 try:
-    fire.Fire(CommandLine)
+    fire.Fire(CommandLine().interface)
 except KeyboardInterrupt:
     print(termcolor.colored("[User aborted]", "red"))
