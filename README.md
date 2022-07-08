@@ -1,4 +1,6 @@
-# A util CLI
+![Header logo](.assets/header.png)
+
+# Utile CLI
 
 To do multiple things, easily
 
@@ -10,7 +12,7 @@ It has been developed under python 3.9.0. I don't know if it works well under ot
 
 ## Building
 
-You can build `cli.exe` to use it as a standalone executable. You can then rename it, and add it to the path to use it in every terminal.
+You can build `utile.exe` to use it as a standalone executable. You can then rename it, and add it to the path to use it in every terminal.
 
 `py build.py build`
 
@@ -26,7 +28,7 @@ The easiest way to use this util is to use the GUI, an interface to the CLI. Lau
 With this CLI, you can easily download YouTube videos (restricted features for now) with the following command:
 
 ```shell
-py cli.py youtube <url: str> [--onlyaudio]
+py utile.py youtube <url: str> [--onlyaudio]
 ```
 
 `url` must be a valid YouTube link, or any valid link supported by youtube_dl
@@ -39,5 +41,5 @@ py cli.py youtube <url: str> [--onlyaudio]
 You can also easily convert images (faster and even easier with gui) like so:
 
 ```shell
-py cli.py convert <image_path: str> [--format=<format: str>] [--width=<width: int>] [--height=<height: int>]
+py utile.py convert <image_path: str> [--format=<format: str>] [--width=<width: int>] [--height=<height: int>]
 ```
