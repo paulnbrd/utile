@@ -3,9 +3,11 @@ description: >-
   A quick and easy CLI, and GUI on top of it, that can be used to do multiple
   things. I know, it's not very understandable right now, but you will quickly
   understand.
+cover: .gitbook/assets/header.png
+coverY: 0
 ---
 
-# 🚙 CLIUtils
+# 🚙 Utile CLI
 
 A CLI to do things that you do often, more efficiently, quickly, ... For example, you can download YouTube videos, convert images, ...
 
@@ -16,7 +18,7 @@ This project is in beta.
 ### Getting started
 
 {% hint style="info" %}
-**Good to know:** For now, CLIUtils does not update itself automatically. You need to do it manually.
+**Good to know:** For now, Utile CLI does not update itself automatically. You need to do it manually.
 {% endhint %}
 
 ### Guides

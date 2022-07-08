@@ -23,7 +23,7 @@ If **cloudflared** can be found is an accessible command, this module will use i
 To create a tunnel, use the subcommand `create-tunnel` like so:
 
 ```
-<CLIUtils command> cloudflare create-tunnel <URL_TO_REDIRECT> [--should-update-cloudflared]
+<utile command> cloudflare create-tunnel <URL_TO_REDIRECT> [--should-update-cloudflared]
 ```
 
 `URL_TO_REDIRECT` (required): The url to the locally running app, or the url you want to redirect.
@@ -33,7 +33,7 @@ To create a tunnel, use the subcommand `create-tunnel` like so:
 For example, I launched a React app on port 3000, and I want to show my friend my progress. I can setup a tunnel to that like so:
 
 ```
-><CLIUtils command> cloudflare create-tunnel http://localhost:3000
+> <utile command> cloudflare create-tunnel http://localhost:3000
 2022-07-08T16:13:33Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
 2022-07-08T16:13:33Z INF Requesting new quick Tunnel on trycloudflare.com...
 2022-07-08T16:13:35Z INF +--------------------------------------------------------------------------------------------+

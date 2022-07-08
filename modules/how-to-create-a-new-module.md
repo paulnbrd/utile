@@ -6,10 +6,10 @@ description: This page describes how you can create your own modules !
 
 To create a new module, you first need to create a new Python file, under cli/modules. For example, I want to create a module that double the number that we give to it. I create a file named double.py (the name doesn't matter), and begin to edit it.
 
-We then need to create a sort of "module manifest" by creating a class that inherits the Module class (cli.modules.Module.Module). For the example module, I can do that like so:
+We then need to create a sort of "module manifest" by creating a class that inherits the Module class (utile.modules.Module.Module). For the example module, I can do that like so:
 
 ```python
-from cli.modules.Module import Module
+from utile.modules.Module import Module
 
 
 class ModuleDouble(Module):
@@ -17,9 +17,9 @@ class ModuleDouble(Module):
 
 ```
 
-You need to define the command name, which will be the keywork just after the CLIUtils command:
+You need to define the command name, which will be the keywork just after the utile command:
 
-`<CLIUtils command> <command name>`
+`<utile command> <command name>`
 
 To do that, modify your module class to implement the function to get the command name:
 
@@ -69,10 +69,10 @@ Like so, the module can be imported by the CLI, and is now ready to be used !
 We can use our newly created module like so:
 
 ```
-<CLIUtils command> double <number>
+<utile command> double <number>
 
 // For example
-<CLIUtils command> double 2
+<utile command> double 2
 // Prints 4
 ```
 

@@ -1,6 +1,6 @@
 # Table of contents
 
-* [🚙 CLIUtils](README.md)
+* [🚙 Utile CLI](README.md)
 
 ## 📕 Guides
 
