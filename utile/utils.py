@@ -10,8 +10,8 @@ documents_path = os.path.realpath(os.path.expanduser("~/Documents"))
 
 
 class Directory:
-    UTILS_DOCUMENTS_PATH = os.path.join(documents_path, "CLI_UTILS")
-    YOUTUBE_VIDEOS = os.path.join(documents_path, "CLI_UTILS", "youtube")
+    UTILS_DOCUMENTS_PATH = os.path.join(documents_path, "Utile CLI")
+    YOUTUBE_VIDEOS = os.path.join(documents_path, "Utile CLI", "youtube")
     
     def create_storage_directory(directory_name: str):
         directory_path = os.path.join(Directory.UTILS_DOCUMENTS_PATH, directory_name)
