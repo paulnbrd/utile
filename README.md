@@ -4,6 +4,8 @@
 
 To do multiple things, easily
 
+[Docs](https://docs.utile.paulinux.fr)
+
 ## Installation
 
 It has been developed under python 3.9.0. I don't know if it works well under other versions/os (For this project, I'm on Windows)/...
