@@ -9,9 +9,9 @@ build_exe_options = {"excludes": ["tkinter"]}
 base = None
 
 setup(
-    name="utils",
+    name="utile",
     version="0.1",
-    description="CLI Utils",
+    description="Utile CLI",
     options={"build_exe": build_exe_options},
-    executables=[Executable("cli.py", base=base)],
+    executables=[Executable("utile.py", base=base)],
 )

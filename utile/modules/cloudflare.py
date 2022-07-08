@@ -1,9 +1,9 @@
 from fileinput import filename
-from cli.modules.Module import Module
+from utile.modules.Module import Module
 import platform
 import subprocess
 import requests
-import cli.utils
+import utile.utils
 import sys
 import os
 import termcolor
@@ -61,7 +61,7 @@ def get_appropriate_latest_cloudflared_version():
     raise RuntimeError("Could not determine proper version of cloudflared for your system.")
 
 
-cloudflare_path = cli.utils.Directory.create_cache_directory("cloudflare")
+cloudflare_path = utile.utils.Directory.create_cache_directory("cloudflare")
 cloudflared_path = os.path.join(cloudflare_path, "cloudflared.exe")
 cloudflared_version_path = os.path.join(cloudflare_path, "cloudflared.exe.version")
 def has_cloudflared_in_cache():
@@ -79,7 +79,7 @@ def download_latest_cloudflared_version():
     download_cloudflared(url, release_version)
     
 def download_cloudflared(url: str, version: str):
-    with cli.utils.create_spinner() as spinner:
+    with utile.utils.create_spinner() as spinner:
         if os.path.isfile(cloudflared_version_path):
             spinner.text = "Cleaning..."
             os.unlink(cloudflared_version_path)

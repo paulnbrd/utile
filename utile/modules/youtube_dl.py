@@ -1,14 +1,14 @@
 import tempfile
 from yt_dlp import YoutubeDL, utils
 import shutil
-import cli.utils as utils
+import utile.utils as utils
 import os
 import subprocess
 import platform
 import termcolor
 import validators
 import colorama
-from cli.modules.Module import Module
+from utile.modules.Module import Module
 
 colorama.init()
 

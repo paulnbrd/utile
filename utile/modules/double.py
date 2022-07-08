@@ -1,5 +1,5 @@
 # This file is an example module for the docs (https://pol1.gitbook.io/cliutils/modules/how-to-create-a-new-module)
-from cli.modules.Module import Module
+from utile.modules.Module import Module
 
 
 def execute(number: int):
