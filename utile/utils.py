@@ -4,7 +4,7 @@ from yaspin import yaspin
 from yaspin.spinners import Spinners
 import termcolor
 
-filepath = os.path.realpath(os.path.join(os.path.dirname(__file__), os.pardir))
+filepath = os.path.realpath(os.path.join(os.path.realpath(sys.argv[0]), os.pardir))
 cwd = os.getcwd()
 documents_path = os.path.realpath(os.path.expanduser("~/Documents"))
 

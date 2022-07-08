@@ -4,7 +4,6 @@ from utile.modules import youtube_dl, convert
 import termcolor
 import os
 import importlib
-
 from utile.modules.Module import Module
 
 
@@ -48,15 +47,18 @@ class CommandLine:
         files = os.listdir(modules_path)
         if "Module.py" in files:
             files.remove("Module.py")
-        files = [file.removesuffix(".py") for file in files if not os.path.isdir(
+        if "Module.pyc" in files:
+            files.remove("Module.pyc")
+        files = [file.removesuffix(".py").removesuffix(".pyc") for file in files if not os.path.isdir(
             os.path.join(modules_path, file)
-        )]
+        ) and not file == "__init__.py" and not file == "__init__.pyc"]
         
         for file in files:
-            module = importlib.import_module("cli.modules.{}".format(file))
+            module = importlib.import_module("utile.modules.{}".format(file))
             if not hasattr(module, "MODULE"):
-                raise RuntimeError("MODULE object could not be found for module {}".format(file))
-            self.modules.append(getattr(module, "MODULE"))
+                print(RuntimeWarning("MODULE_ERROR > MODULE object could not be found for module {}".format(file)))
+            else:
+                self.modules.append(getattr(module, "MODULE"))
             
         self.instantiate_modules()
                     
