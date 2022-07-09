@@ -30,6 +30,11 @@ class Directory:
             print("Could not create cache directory. Aborting.")
             sys.exit(-1)
         return directory_path
+    
+    def get_cache_path(*args):
+        """Returns a cache path, but does not ensure that the directories exists
+        """
+        return os.path.join(filepath, "cache", *args)
 
 
 try:
