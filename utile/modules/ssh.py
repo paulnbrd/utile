@@ -136,6 +136,12 @@ class Executor:
                 ))
             else:
                 print(termcolor.colored("SSH exited with error code {}".format(e.returncode), "red"))
+                
+    def remove_connection(self, name: str):
+        if self.has_connection_with_name(name):
+            conn = self.get_connection_by_name(name)
+            self.connections.remove(conn)
+            os.unlink(self.get_connection_save_path(name))
 
 instance = Executor()
 
@@ -143,14 +149,28 @@ class SSH:
     def register(self, connection_name: str, username: str, host: str):
         instance.register_ssh(connection_name, username, host)
         
-    def list(self):
+    def remove(self, name: str):
+        if not instance.has_connection_with_name(name):
+            print(termcolor.colored("Could not find any connection with name {}".format(name), "red"))
+            return
+        try:
+            instance.remove_connection(name)
+            print(termcolor.colored("Removed successfully", "green"))
+        except:
+            print(termcolor.colored("Could not remove connection", "red"))
+    def list(self, show_addresses: bool = False):
         print("List of registered SSH connections:")
         for connection in instance.connections:
-            print("> {} ({}@{})".format(
-                termcolor.colored(connection["name"], "green"),
-                connection["username"],
-                connection["host"]
-            ))
+            if show_addresses:
+                print("> {} ({}@{})".format(
+                    termcolor.colored(connection["name"], "green"),
+                    connection["username"],
+                    connection["host"]
+                ))
+            else:
+                print("> {}".format(
+                    termcolor.colored(connection["name"], "green")
+                ))
         if len(instance.connections) == 0:
             print("> No registered connection")
         
@@ -163,6 +183,6 @@ class SSHModule(Module):
         return "ssh"
 
     def get_executor(self):
-        return Executor
+        return SSH
 
 MODULE = SSHModule()
