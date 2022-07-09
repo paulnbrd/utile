@@ -7,10 +7,7 @@ import subprocess
 import platform
 import termcolor
 import validators
-import colorama
 from utile.modules.Module import Module
-
-colorama.init()
 
 
 def check_ffmpeg():
@@ -136,6 +133,7 @@ class YoutubeDownloader(Module):
         return "youtube"
     def get_executor(self):
         return execute
-
-
+    def init_module(self):
+        pass
+    
 MODULE = YoutubeDownloader()

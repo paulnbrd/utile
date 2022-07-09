@@ -1,4 +1,3 @@
-from fileinput import filename
 from utile.modules.Module import Module
 import platform
 import subprocess
@@ -160,6 +159,9 @@ class CloudflareModule(Module):
         if not "windows" in platform.platform().lower():
             return lambda: print("Cloudflare module is currently only compatible with windows systems. Sorry !")
         return Execute
+    
+    def init_module(self):
+        pass
 
 
 MODULE = CloudflareModule()

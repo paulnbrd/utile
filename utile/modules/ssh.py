@@ -143,7 +143,7 @@ class Executor:
             self.connections.remove(conn)
             os.unlink(self.get_connection_save_path(name))
 
-instance = Executor()
+instance = None
 
 class SSH:
     def register(self, connection_name: str, username: str, host: str):
@@ -184,5 +184,9 @@ class SSHModule(Module):
 
     def get_executor(self):
         return SSH
+    
+    def init_module(self):
+        global instance
+        instance = Executor()
 
 MODULE = SSHModule()

@@ -1,3 +1,4 @@
+from webbrowser import get
 import fire
 import inspect
 from utile.modules import youtube_dl, convert
@@ -5,6 +6,9 @@ import termcolor
 import os
 import importlib
 from utile.modules.Module import Module
+import colorama
+
+colorama.init()
 
 
 def static_class(*args, **kwargs) -> callable:
@@ -63,14 +67,25 @@ class CommandLine:
                 if module_name in names:
                     raise RuntimeError("Duplicate command name {}".format(module_name))
                 names.append(module_name)
-                self.modules.append(getattr(module, "MODULE"))
+                module = getattr(module, "MODULE")
+                if not hasattr(module, "init_module"):
+                    print("[{}] It is highly recommended to have an init_module method on your module to speed up the CLI loading time".format(module.get_command_name()))
+                self.modules.append(module)
             
         self.instantiate_modules()
                     
     def instantiate_modules(self):
         self.interface = CommandLineInterface()
         for module in self.modules:
-            setattr(self.interface, module.get_command_name(), module.get_executor())
+            setattr(self.interface, module.get_command_name(), self.make_module_executor(module))
+            
+    def make_module_executor(self, module: Module):
+        def wrapper():
+            # We initialize module
+            if hasattr(module, "init_module"):
+                getattr(module, "init_module")()
+            return module.get_executor()
+        return wrapper
             
 
 

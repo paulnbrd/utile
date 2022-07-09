@@ -1,9 +1,8 @@
-from PIL import Image
-
 from utile.modules.Module import Module
 
 
 def execute(image_path: str, format: str = "png", width: int = None, height: int = None):
+    from PIL import Image
     try:
         print("Opening image...")
         result_kwargs = {}
@@ -40,6 +39,8 @@ class ImageConverter(Module):
         return "convert"
     def get_executor(self):
         return execute
+    def init_module(self):
+        pass
     
 
 MODULE = ImageConverter()

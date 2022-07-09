@@ -13,4 +13,7 @@ class ModuleDouble(Module):
     def get_executor(self):
         return execute
     
+    def init_module(self):
+        pass
+    
 MODULE = ModuleDouble()
