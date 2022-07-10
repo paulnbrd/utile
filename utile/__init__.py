@@ -1,7 +1,7 @@
 from webbrowser import get
 import fire
 import inspect
-from utile.module_manager import ModuleManager
+from utile.module_manager import ModuleManagerInterface
 from utile.modules import youtube_dl, convert
 import termcolor
 import os
@@ -45,7 +45,7 @@ class CommandLineInterface:
     #         return super().__getattribute__(__name)
     #     return command_line.module_getter(__name)
     def module(self):
-        return ModuleManager
+        return ModuleManagerInterface
 
 
 class CommandLine:
@@ -124,11 +124,3 @@ class CommandLine:
         def wrapper():
             return module.get_executor()
         return wrapper
-            
-
-
-command_line = CommandLine()
-try:
-    fire.Fire(command_line.interface)
-except KeyboardInterrupt:
-    print(termcolor.colored("[User aborted]", "red"))
