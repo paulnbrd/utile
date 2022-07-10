@@ -46,6 +46,7 @@ class Module:
         
     def import_module(self):
         self.imported = importlib.import_module("modules.{}.module".format(self.module_id))
+        return self.imported
         
     def install(self, packaged):
         if self.is_installed():

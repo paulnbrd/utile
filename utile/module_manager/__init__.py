@@ -192,6 +192,7 @@ class ModuleManagerInterface:
         if result:
             print(termcolor.colored("Module installed succesffuly", "green"))
 
+    @module_manager_initer
     def uninstall(self, module_name: str):
         if not module_name in module_manager.get_module_names():
             print(termcolor.colored("There is no installed module with this name"))
