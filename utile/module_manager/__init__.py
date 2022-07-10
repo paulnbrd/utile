@@ -38,11 +38,7 @@ class ModuleManager:
         if len(self.repos) == 0:
             print("No repo added. No modules will be available to download.")
         
-        root_path = os.path.realpath(
-            os.path.dirname(
-                sys.argv[0]
-            )
-        )
+        root_path = os.path.realpath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
         self.modules_path = os.path.join(root_path, "modules")
         
         self.module_ids = [d for d in os.listdir(self.modules_path) if d.startswith("m") and os.path.isdir(
@@ -81,6 +77,9 @@ def module_manager_initer(func):
 class ModuleManagerInterface:
     @module_manager_initer
     def list(self):
+        if len(module_manager.modules) == 0:
+            print("No module installed")
+            return
         print("List of installed modules:")
         for mod in module_manager.modules:
             print(mod.manifest.name + "@" + mod.manifest.version)
@@ -171,6 +170,13 @@ class ModuleManagerInterface:
                 termcolor.colored(latest_version, "cyan")
             ))
             version = latest_version
+             
+        latest_version = versions.get("latest", None)
+        if update and module_name in module_manager.get_module_names():
+            module = module_manager.get_module(module_name)
+            if module.manifest.version == latest_version:
+                print(termcolor.colored("You already have the last version"))
+                return
         
         print("Dowloading module...")
         module = repo_used.get_module(module_name, version)

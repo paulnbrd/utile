@@ -16,11 +16,7 @@ class Module:
         self.module_id = id
         self.imported = None
         
-        root_path = os.path.realpath(
-            os.path.dirname(
-                sys.argv[0]
-            )
-        )
+        root_path = os.path.realpath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
         self.modules_path = os.path.join(root_path, "modules")
         self.module_dir = os.path.join(self.modules_path, self.module_id)
         
