@@ -1,3 +1,6 @@
+from utile.CacheManager import JSONCache
+from utile.module_manager.ModulesRepo import DEFAULT_MODULES_REPO, ModulesRepo
+import utile.utils
 from .manifest import Manifest
 from .packager import package, unpackage
 from .Module import Module
@@ -18,6 +21,20 @@ class ModuleManager:
     def __init__(self, auto_discover_modules: bool = True) -> None:
         self.modules: list[Module] = []
         self.module_ids: list[str] = []
+        
+        self.repos: list[ModulesRepo] = []
+        self.repos_cache = JSONCache(utile.utils.Directory.get_cache_path("repos"))
+        repos_urls = self.repos_cache.read_cache("urls.json")
+        if repos_urls is None:
+            repos_urls = [DEFAULT_MODULES_REPO]
+            self.repos_cache.write_cache("urls.json", repos_urls)
+        for url in repos_urls:
+            repo = ModulesRepo(url)
+            self.repos.append(repo)
+        print("Loading module management")
+        
+        if len(self.repos) == 0:
+            print("No repo added. No modules will be available to download.")
         
         root_path = os.path.realpath(
             os.path.dirname(
@@ -42,15 +59,34 @@ class ModuleManager:
         return [mod.manifest.name for mod in self.modules]
     
 
-module_manager = ModuleManager()
+module_manager = None
+
+def module_manager_initer(func):
+    def wrapper(*args, **kwargs):
+        global module_manager
+        if not module_manager:
+            module_manager = ModuleManager()
+        return func(*args, **kwargs)
+    return wrapper
 
 
 class ModuleManagerInterface:
+    @module_manager_initer
     def list(self):
         print("List of installed modules:")
         for mod in module_manager.modules:
             print(mod.manifest.name + "@" + mod.manifest.version)
+    
+    @module_manager_initer
+    def rebuild_repos_cache(self):
+        print("Rebuilding cache for repos...")
+        for repo in module_manager.repos:
+            print("Rebuilding cache for repo {}...".format(termcolor.colored(repo.url, "green")))
+            repo.rebuild_cache()
+        if len(module_manager.repos) == 0:
+            print("No repo")
         
+    @module_manager_initer
     def install(self, module: str, update: bool = False):
         module = str(module)
         splitted = module.split("@")

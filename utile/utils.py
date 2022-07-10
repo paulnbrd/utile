@@ -11,6 +11,10 @@ cwd = os.getcwd()
 documents_path = os.path.realpath(os.path.expanduser("~/Documents"))    
 
 
+def filename_friendly(string: str):
+    return "".join([c for c in string if c.isalpha() or c.isdigit() or c==' ']).rstrip()
+
+
 class Directory:
     UTILS_DOCUMENTS_PATH = os.path.join(documents_path, "Utile CLI")
     YOUTUBE_VIDEOS = os.path.join(documents_path, "Utile CLI", "youtube")
