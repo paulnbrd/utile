@@ -3,6 +3,7 @@ import os
 import sys
 import base64
 import json
+import py_compile
 
 
 class InvalidModuleError(Exception):
@@ -76,6 +77,7 @@ def package(module_directory: str, dirty_module_check: bool = False):
 
     
 def unpackage(packaged: str, write_package_in_dir: str = None):
+    print("* Unpackaging...")
     try:
         json_encoded = base64.b64decode(bytes.fromhex(packaged))
         decoded_json = json.loads(json_encoded)
@@ -87,6 +89,7 @@ def unpackage(packaged: str, write_package_in_dir: str = None):
         raise ModuleDecodeError(str(e))
 
     if write_package_in_dir is not None:
+        print("* Installing...")
         real_path = os.path.realpath(write_package_in_dir)
         parent_dir = os.path.dirname(real_path)
         if not os.path.isdir(parent_dir):
@@ -99,6 +102,17 @@ def unpackage(packaged: str, write_package_in_dir: str = None):
             os.makedirs(os.path.dirname(real_file_path), exist_ok=True)
             with open(real_file_path, "wb") as f:
                 f.write(content)
+            # Now we compile the file
+            if real_file_path.endswith(".py"):
+                print("* Compiling {}...".format(os.path.basename(real_file_path)))
+                py_compile.compile(real_file_path, real_file_path + "c")
+                os.remove(real_file_path)
     
     return decoded_json
-   
+
+
+if __name__ == "__main__":
+    packaged = package("modules/cloudflare")
+    print(packaged)
+    print(40*"=")
+    unpackage(packaged, "_module_cloudflare")

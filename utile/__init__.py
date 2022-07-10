@@ -1,6 +1,7 @@
 from webbrowser import get
 import fire
 import inspect
+from utile.module_manager import ModuleManager
 from utile.modules import youtube_dl, convert
 import termcolor
 import os
@@ -43,7 +44,8 @@ class CommandLineInterface:
     #     if __name.startswith("__"):
     #         return super().__getattribute__(__name)
     #     return command_line.module_getter(__name)
-    pass
+    def module(self):
+        return ModuleManager
 
 
 class CommandLine:
