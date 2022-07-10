@@ -5,8 +5,10 @@ from yaspin.spinners import Spinners
 import termcolor
 
 filepath = os.path.realpath(os.path.join(os.path.realpath(sys.argv[0]), os.pardir))
+cache_dir = os.path.join(filepath, "cache")
+modules_dir = os.path.join(filepath, "modules")
 cwd = os.getcwd()
-documents_path = os.path.realpath(os.path.expanduser("~/Documents"))
+documents_path = os.path.realpath(os.path.expanduser("~/Documents"))    
 
 
 class Directory:
@@ -23,7 +25,7 @@ class Directory:
         return directory_path
     
     def create_cache_directory(directory_name: str):
-        directory_path = os.path.join(filepath, "cache", directory_name)
+        directory_path = os.path.join(cache_dir, directory_name)
         try:
             os.makedirs(directory_path, exist_ok=True)
         except PermissionError:
@@ -34,9 +36,21 @@ class Directory:
     def get_cache_path(*args):
         """Returns a cache path, but does not ensure that the directories exists
         """
-        return os.path.join(filepath, "cache", *args)
+        return os.path.join(cache_dir, *args)
 
 
+try:
+    os.makedirs(cache_dir, exist_ok=True)
+except PermissionError:
+    print(termcolor.colored(
+        "Could not create cache directory. Please check program permissions.", "red"))
+    sys.exit(-1)
+try:
+    os.makedirs(modules_dir, exist_ok=True)
+except PermissionError:
+    print(termcolor.colored(
+        "Could not create modules directory. Please check program permissions.", "red"))
+    sys.exit(-1)
 try:
     os.makedirs(Directory.YOUTUBE_VIDEOS, exist_ok=True)
 except PermissionError:

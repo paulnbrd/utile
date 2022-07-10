@@ -72,7 +72,7 @@ class CommandLine:
                     filenames = json.load(f)
                 return filenames
             except:
-                print("Could not load modules from cache")
+                print("Could not load modules from cache. Loading modules manually...")
         # Cache doesn't exist, we create it
         self_path = os.path.realpath(os.path.dirname(__file__))
         modules_path = os.path.join(self_path, "modules")
