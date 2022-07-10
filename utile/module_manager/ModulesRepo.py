@@ -1,5 +1,7 @@
 import requests
 from utile.CacheManager import JSONCache
+from utile.module_manager.Module import Module
+from utile.module_manager.manifest import Manifest
 import utile.utils
 import termcolor
 
@@ -35,7 +37,9 @@ class ModulesRepo:
     def fetch_module_versions(self, module_name: str):
         url = self.url + "/{}/versions.json".format(module_name)
         try:
-            return requests.get(url).json()
+            req = requests.get(url)
+            req.raise_for_status()
+            return req.json()
         except Exception as e:
             print(termcolor.colored("Unable to fetch versions for module {} ({})".format(module_name, e), "red"))
             return None
@@ -48,7 +52,68 @@ class ModulesRepo:
             print(termcolor.colored("Unable to fetch repo modules (url: {}, {})".format(self.url, e), "red"))
             return False
         
+    def is_valid_repo(self):
+        result = self.build_modules_cache()
+        return result
+        
     def rebuild_cache(self):
         self.build_modules_cache()
         self.get_modules_versions()
+        
+    def has_module(self, module_name: str):
+        return module_name in self.modules
+    
+    def get_module_versions(self, module_name: str):
+        if module_name not in self.modules:
+            return None
+        versions = self.cache.read_cache("versions/{}".format(module_name))
+        if versions is None:
+            versions = self.fetch_module_versions(module_name)
+            if versions is not None:
+                self.cache.write_cache("versions/{}".format(module_name), versions)
+        return versions
+    
+    def module_has_version(self, module_name: str, version: str):
+        versions = self.get_module_versions(module_name)
+        if versions is None:
+            return False
+        for vers in versions.get("list", []):
+            if vers == version:
+                return True
+        return False
+    
+    def get_module_manifest(self, module_name: str, version: str):
+        url = f"{self.url}/{module_name}/{version}/manifest.json"
+        cached = self.cache.read_cache(f"module/{module_name}/manifest")
+        if cached:
+            return Manifest(cached)
+        try:
+            req = requests.get(url)
+            req.raise_for_status()
+            data = req.json()
+            self.cache.write_cache(f"module/{module_name}/manifest", data)
+            return Manifest(data)
+        except:
+            return None
+        
+    def get_module_packaged(self, module_name: str, version: str):
+        url = f"{self.url}/{module_name}/{version}/packaged.module"
+        cached = self.cache.read_cache(f"module/{module_name}/packaged")
+        if cached:
+            return cached
+        try:
+            req = requests.get(url)
+            req.raise_for_status()
+            data = req.text
+            self.cache.write_cache(f"module/{module_name}/packaged", data)
+            return data
+        except Exception as e:
+            return None
+    
+    def get_module(self, module_name: str, version: str):
+        if not self.module_has_version(module_name, version):
+            return None
+        manifest = self.get_module_manifest(module_name, version)
+        packaged = self.get_module_packaged(module_name, version)
+        return manifest, packaged
         

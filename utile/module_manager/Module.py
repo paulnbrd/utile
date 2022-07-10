@@ -1,3 +1,4 @@
+from utile.module_manager.packager import unpackage
 from .manifest import Manifest
 import importlib
 import os
@@ -36,7 +37,8 @@ class Module:
         # If not, it means that it is a module not installed.
         if not os.path.isdir(self.module_dir):
             return False
-        if not os.path.isfile(os.path.join(self.module_dir, "module.py")):
+        if not os.path.isfile(os.path.join(self.module_dir, "module.py")) \
+            and not os.path.isfile(os.path.join(self.module_dir, "module.pyc")):
             return False
         if not os.path.isfile(os.path.join(self.module_dir, "manifest.json")):
             return False
@@ -44,3 +46,13 @@ class Module:
         
     def import_module(self):
         self.imported = importlib.import_module("modules.{}.module".format(self.module_id))
+        
+    def install(self, packaged):
+        if self.is_installed():
+            return True
+        try:
+            unpackage(packaged, self.module_dir)
+            return True
+        except Exception as e:
+            print("Error while installing module ({})".format(e))
+            return False
