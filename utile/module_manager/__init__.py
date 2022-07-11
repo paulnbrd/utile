@@ -62,6 +62,40 @@ class ModuleManager:
                 return mod
         return None
     
+    def add_repo(self, repo_url):
+        repo_urls_list = [repo.url for repo in self.repos]
+        if repo_url in repo_urls_list:
+            print(termcolor.colored("Repo already in list", "green"))
+            return
+        new_repo = ModulesRepo(repo_url)
+        is_valid = new_repo.is_valid_repo()
+        if not is_valid:
+            print(termcolor.colored("This repo is invalid. It might be a network error.", "red"))
+            return
+        repo_urls_list.append(repo_url)
+        self.repos_cache.write_cache("urls.json", repo_urls_list)
+        print(termcolor.colored("Added successfully", "green"))
+        
+    def get_repo(self, url: str):
+        for repo in self.repos:
+            if repo.url == url:
+                return repo
+        return None
+        
+    def remove_repo(self, repo_url: str):
+        repo_urls_list = [repo.url for repo in self.repos]
+        if repo_url not in repo_urls_list:
+            print(termcolor.colored("Repo is not in list", "green"))
+            return
+        repo = self.get_repo(repo_url)
+        if repo is None:
+            print(termcolor.colored("An unknown error occurred. Please try again.", "red"))
+            return
+        repo.remove_cache()
+        repo_urls_list.remove(repo_url)
+        self.repos_cache.write_cache("urls.json", repo_urls_list)
+        print(termcolor.colored("Removed successfully", "green"))
+    
 
 module_manager = None
 
@@ -75,6 +109,23 @@ def module_manager_initer(func):
 
 
 class ModuleManagerInterface:
+    
+    @module_manager_initer
+    def add_repo(self, repo_url: str):
+        module_manager.add_repo(repo_url)
+        
+    @module_manager_initer
+    def remove_repo(self, repo_url: str):
+        module_manager.remove_repo(repo_url)
+        
+    @module_manager_initer
+    def list_repos(self):
+        print("List of repositories of modules:")
+        for repo in module_manager.repos:
+            print("Repo at {}".format(termcolor.colored(repo.url, "green")))
+        if len(module_manager.repos) == 0:
+            print("No repo.")
+    
     @module_manager_initer
     def list(self):
         if len(module_manager.modules) == 0:
@@ -92,11 +143,6 @@ class ModuleManagerInterface:
             repo.rebuild_cache()
         if len(module_manager.repos) == 0:
             print("No repo")
-            
-    @module_manager_initer
-    def clear_cache(self):
-        print("Clearing repos cache")
-        shutil.rmtree(utile.utils.Directory.get_cache_path("repos"))
         
     @module_manager_initer
     def install(self, module: str, update: bool = False, repo: str = None):

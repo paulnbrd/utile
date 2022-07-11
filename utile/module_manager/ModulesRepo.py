@@ -1,3 +1,5 @@
+import os
+import shutil
 import requests
 from utile.CacheManager import JSONCache
 from utile.module_manager.Module import Module
@@ -47,16 +49,21 @@ class ModulesRepo:
     def build_modules_cache(self):
         try:
             self.modules = self.requests_session.get(f"{self.url}/modules.json").json()
+            self.cache.write_cache("modules", self.modules)
             return True
         except Exception as e:
             print(termcolor.colored("Unable to fetch repo modules (url: {}, {})".format(self.url, e), "red"))
             return False
         
     def is_valid_repo(self):
-        result = self.build_modules_cache()
-        return result
-        
+        return self.modules is not None
+    
+    def remove_cache(self):
+        shutil.rmtree(self.cache.base_directory)
+    
     def rebuild_cache(self):
+        self.remove_cache()
+        os.makedirs(self.cache.base_directory, exist_ok=True)
         self.build_modules_cache()
         self.get_modules_versions()
         
