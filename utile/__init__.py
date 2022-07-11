@@ -1,6 +1,6 @@
 from utile.module_manager import ModuleManagerInterface
+from utile.module_manager.Module import Module
 from utile.module_manager.ModulesLoader import ModulesLoader
-from utile.modules.Module import Module
 import colorama
 import utile.utils
 

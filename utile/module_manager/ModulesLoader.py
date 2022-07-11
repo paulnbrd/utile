@@ -13,7 +13,7 @@ class ModulesLoader:
         
         self.module_ids = [i for i in os.listdir(self.modules_dir) if os.path.isdir(
             os.path.join(self.modules_dir, i)
-        )]
+        ) and i.startswith("m")]
         self.modules: list[Module] = [
             Module(id) for id in self.module_ids
         ]

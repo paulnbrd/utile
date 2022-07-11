@@ -1,6 +1,7 @@
 import utile
 import fire
 import termcolor
+import yt_dlp
 
 command_line = utile.CommandLine()
 try:
