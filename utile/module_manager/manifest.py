@@ -1,4 +1,7 @@
-from types import NoneType
+try:
+    from types import NoneType
+except ImportError:
+    NoneType = type(None)
 import typing
 import json
 from dataclasses import dataclass
@@ -14,10 +17,14 @@ def variable_is_of_one_of_type(variable: typing.Any, types_list: list[typing.Typ
 def type_validator(t: typing.Any, field_max_length: int = None):
     def validate(value: typing.Any):
         if isinstance(t, list):
-            return lambda x: variable_is_of_one_of_type(x, t) and ((len(x) <= field_max_length) if field_max_length is not None and x is not None else True)
-        return lambda x: type(x) is t and ((len(x) <= field_max_length) if field_max_length is not None and x is not None else True)
+            def func(x): return variable_is_of_one_of_type(x, t) and (
+                (len(x) <= field_max_length) if field_max_length is not None and x is not None else True)
+        else:
+            def func(x): return type(x) is t and ((len(x) <= field_max_length)
+                                                  if field_max_length is not None and x is not None else True)
+        return func(value)
     return validate
-    
+
 
 REQUIRED_FIELDS = ["name", "version"]
 FIELDS_VALIDATORS = {
@@ -50,31 +57,33 @@ class InvalidManifest(Exception):
 class Manifest:
     def __init__(self, data: typing.Union[str, dict]):
         self.data: dict = data
-        
+
         self.name, self.version, self.tags, self.description, self.author = None, None, [], None, None
-        
+
         if type(data) is str:
             try:
                 self.data = json.loads(data)
             except:
-                raise InvalidManifest(ManifestParsingErrorCode.INVALID_JSON, "INVALID_JSON")
-            
+                raise InvalidManifest(
+                    ManifestParsingErrorCode.INVALID_JSON, "INVALID_JSON")
+
         # Parsing content
         required_fields = REQUIRED_FIELDS
         for field in required_fields:
             if field not in self.data.keys():
                 raise InvalidManifest(
                     ManifestParsingErrorCode.MISSING_FIELD, "MISSING_FIELD: {}"
-                        .format(field)
+                    .format(field)
                 )
-                
+
         for field, validator in FIELDS_VALIDATORS.items():
-            field_value = self.data.get(field, FIELDS_DEFAULT_VALUES.get(field, lambda: None)())
+            field_value = self.data.get(
+                field, FIELDS_DEFAULT_VALUES.get(field, lambda: None)())
             is_valid = validator(field_value)
             if not is_valid:
                 raise InvalidManifest(ManifestParsingErrorCode.INVALID_FIELD_FORMAT,
                                       "INVALID_FIELD_FORMAT: {}".format(field))
-                
+
             setattr(self, field, field_value)
 
 
