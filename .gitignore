@@ -5,3 +5,4 @@ youtube/
 cache/
 .venv/
 modules/
+.deps/

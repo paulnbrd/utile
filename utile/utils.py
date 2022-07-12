@@ -7,6 +7,7 @@ import termcolor
 filepath = os.path.realpath(os.path.join(os.path.dirname(__file__), os.pardir))
 cache_dir = os.path.join(filepath, "cache")
 modules_dir = os.path.join(filepath, "modules")
+deps_dir = os.path.join(filepath, ".deps")
 cwd = os.getcwd()
 documents_path = os.path.realpath(os.path.expanduser("~/Documents"))    
 
@@ -43,6 +44,12 @@ class Directory:
         return os.path.join(cache_dir, *args)
 
 
+try:
+    os.makedirs(deps_dir, exist_ok=True)
+except PermissionError:
+    print(termcolor.colored(
+        "Could not create deps directory. Please check program permissions.", "red"))
+    sys.exit(-1)
 try:
     os.makedirs(cache_dir, exist_ok=True)
 except PermissionError:
